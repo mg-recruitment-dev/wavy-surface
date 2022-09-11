@@ -19,11 +19,13 @@ public class SurfaceController : MonoBehaviour
 
     private Mesh generatedMesh = null;
     private float timer = 0f;
+    private int tilesX;
+    private int tilesZ;
 
     private void Awake()
     {
-        GenerateMesh();
         meshRenderer.sharedMaterial = wireframeMaterial;
+        GenerateMesh();
     }
 
     private void Update()
@@ -46,11 +48,12 @@ public class SurfaceController : MonoBehaviour
             return;
         }
 
-        int tilesX = (int)(meshSize.x / tileSize);
-        int tilesZ = (int)(meshSize.y / tileSize);
+        tilesX = (int)(meshSize.x / tileSize);
+        tilesZ = (int)(meshSize.y / tileSize);
 
-        var vertices = GetVerticesForGrid( tilesX, tilesZ, out var colors );
-        var triangles = GetTrianglesForGrid( tilesX, tilesZ );
+        var vertices = GetVerticesForGrid();
+        var colors = GetColorsForGrid();
+        var triangles = GetTrianglesForGrid();
 
         generatedMesh = new Mesh();
         generatedMesh.name = "Surface";
@@ -93,12 +96,12 @@ public class SurfaceController : MonoBehaviour
         else
             meshRenderer.sharedMaterial = wireframeMaterial;
 
+        generatedMesh.colors = GetColorsForGrid();
     }
 
-    private Vector3[] GetVerticesForGrid( int tilesX, int tilesZ, out Color[] colors )
+    private Vector3[] GetVerticesForGrid()
     {
         var vertices = new Vector3[(tilesX + 1) * (tilesZ + 1)];
-        colors = new Color[vertices.Length];
 
         float positionX = 0f;
         float positionZ = 0f;
@@ -111,8 +114,6 @@ public class SurfaceController : MonoBehaviour
                 float positionY = GetIndexPositionY( x, z, timer );
 
                 vertices[currentIndex] = new Vector3( positionX, positionY, positionZ );
-                colors[currentIndex] = defaultVertexColor;
-
                 positionX += tileSize;
             }
 
@@ -131,7 +132,23 @@ public class SurfaceController : MonoBehaviour
         return y;
     }
 
-    private int[] GetTrianglesForGrid( int tilesX, int tilesZ )
+    private Color [] GetColorsForGrid()
+    {
+        var colors = new Color[(tilesX + 1) * (tilesZ + 1)];
+
+        for ( int z = 0; z < tilesZ + 1; z++ )
+        {
+            for ( int x = 0; x < tilesX + 1; x++ )
+            {
+                int currentIndex = (z * (tilesX + 1)) + x;
+                colors[currentIndex] = GetColorForVertex( x, z );
+            }
+        }
+
+        return colors;
+    }
+
+    private int[] GetTrianglesForGrid()
     {
         var indicesPerTile = INDICES_IN_TRIANGLE * TRIANGLES_IN_TILE;
         var triangles = new int[indicesPerTile * tilesX * tilesZ];
@@ -156,5 +173,40 @@ public class SurfaceController : MonoBehaviour
         }
 
         return triangles;
+    }
+
+    private Color GetColorForVertex( int x, int z )
+    {
+        if ( meshRenderer.sharedMaterial == shadedMaterial )
+            return defaultVertexColor;
+
+        var color = Color.black;
+
+        if ( z % 3 == 0 )
+            color = Color.red;
+        else if ( z % 3 == 1 )
+            color = Color.green;
+        else
+            color = Color.blue;
+
+        int offset = x % 3;
+
+        while ( offset > 0 )
+        {
+            color = GetNextColorInRow( color );
+            offset--;
+        }
+
+        return color;
+    }
+
+    private Color GetNextColorInRow( Color color )
+    {
+        if ( color == Color.red )
+            return Color.blue;
+        if ( color == Color.blue )
+            return Color.green;
+
+        return Color.red;
     }
 }

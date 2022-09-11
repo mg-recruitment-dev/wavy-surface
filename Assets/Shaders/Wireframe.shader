@@ -103,4 +103,6 @@ Shader "Custom/Wireframe"
 			ENDCG
     	}
 	}
+
+	Fallback "Custom/Wireframe_WebGL"
 }
