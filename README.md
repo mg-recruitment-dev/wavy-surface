@@ -1,5 +1,27 @@
 # Wavy Surface
 
+## Table of contents
+* [Installation](#installation)
+* [Notes and thoughts](#notes-and-thoughts)
+    * [Lighting Shader](#lighting-shader)
+    * [Builds](#builds)
+    * [Bug in WebGL Build](#bug-in-webgl-build)
+* [Answers to questions](#answers-to-questions)
+
+## Installation
+Project uses Git LFS for storing bigger files. [Here](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage) you can find instructions on how to install it. Solution was developed using Unity version 2021.3.9f1, but it should also work on other modern Unity versions.
+
+## Notes and thoughts
+
+### Lighting Shader
+I assumed that the shader used for lighting the surface was supposed to be fragment / vertex shader, but we could also implement lighting using, for example, surface shader's lighting function. Here I also implemented code for applying colors based on the vertex color data. It wasn't said explicitly, but I thought that these values were meant to be used somewhere.
+
+### Builds
+I uploaded builds produced during this challenge in case they were needed. These builds are in .zip files under BuildArchives directory.
+
+### Bug in WebGL Build
+Here is what my thought process behind fixing WebGL bug looked like: I noticed that the bug is caused by WebGL's lack of support for geometry shaders. After that I started to examine the code of the wireframe shader and tried to come up with a way to implement this effect using only vertex and fragment functions. I thought that I could skip the geometry shader step, if I prepopulate mesh with the data that is calculated inside the geometry shader. That's why, in my script, I saved barycentric coordinates as vertex colors. Then I created an alternate version of wireframe shader using only vertex and fragment functions. And finally, I added my newly created shader as a fallback to the original wireframe shader, which fixed the bug.
+
 ## Answers to questions
 Here are the answers to questions asked in the final section of this challenge:
 1. Increasing the mesh size causes the frame rate to drop gradually. I would say, that the animation starts to get choppy at around 500k tiles ( 1M triangles ). That's of course a rough estimate and it also depends on conditions under which test is performed. For example, I tested the performance in the Unity Editor ( where it is usually worse than in build ) and on my machine ( which can be better or worse than some other machine ).
