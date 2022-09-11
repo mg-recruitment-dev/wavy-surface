@@ -8,11 +8,14 @@ public class SurfaceController : MonoBehaviour
     private const int TRIANGLES_IN_TILE = 2;
 
     [SerializeField] private MeshFilter meshFilter;
+    [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private Vector2 meshSize = new Vector2( 30, 20 );
     [SerializeField] private float tileSize = 1f;
     [SerializeField] private Color defaultVertexColor = new Color( 0.851f, 0.894f, 0.984f );
     [SerializeField] private bool animate = true;
     [SerializeField] private float animationSpeed = 1f;
+    [SerializeField] private Material wireframeMaterial;
+    [SerializeField] private Material shadedMaterial;
 
     private Mesh generatedMesh = null;
     private float timer = 0f;
@@ -20,11 +23,13 @@ public class SurfaceController : MonoBehaviour
     private void Awake()
     {
         GenerateMesh();
+        meshRenderer.sharedMaterial = wireframeMaterial;
     }
 
     private void Update()
     {
         AnimateMesh();
+        HandleSwitchingMaterials();
     }
 
     private void GenerateMesh()
@@ -76,6 +81,18 @@ public class SurfaceController : MonoBehaviour
 
         generatedMesh.vertices = vertices;
         generatedMesh.RecalculateNormals();
+    }
+
+    private void HandleSwitchingMaterials()
+    {
+        if ( !Input.GetKeyDown( KeyCode.S ) )
+            return;
+
+        if ( meshRenderer.sharedMaterial == wireframeMaterial )
+            meshRenderer.sharedMaterial = shadedMaterial;
+        else
+            meshRenderer.sharedMaterial = wireframeMaterial;
+
     }
 
     private Vector3[] GetVerticesForGrid( int tilesX, int tilesZ, out Color[] colors )

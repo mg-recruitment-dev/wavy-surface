@@ -5,6 +5,7 @@ public class InfoDisplay : MonoBehaviour
 {
     [SerializeField] private TMP_Text infoLabel;
     [SerializeField] private float fpsUpdateFrequency = 1f;
+    [SerializeField, TextArea] private string staticText = "Press S to switch between wireframe and shaded views";
 
     private float timer;
     private int frameCount;
@@ -26,6 +27,7 @@ public class InfoDisplay : MonoBehaviour
     private void UpdateLabel()
     {
         float averageFramerate = frameCount / timer;
-        infoLabel.text = $"FPS: {averageFramerate.ToString( "0.0" )} (sampled over {fpsUpdateFrequency}s)";
+        infoLabel.text = $"FPS: {averageFramerate.ToString( "0.0" )} (sampled over {fpsUpdateFrequency}s)\n";
+        infoLabel.text += staticText;
     }
 }

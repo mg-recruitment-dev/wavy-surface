@@ -116,6 +116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   infoLabel: {fileID: 8712346435973902508}
   fpsUpdateFrequency: 1
+  staticText: Press S to switch between wireframe and shaded views
 --- !u!1 &8712346434575373163
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,7 +260,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'FPS: 60.0 (sampled over 1s)'
+  m_text: 'FPS: 60.0 (sampled over 1s)
+
+    Press S to switch between wireframe and
+    shaded views'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
