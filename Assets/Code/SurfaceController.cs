@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.Mathf;
 
 public class SurfaceController : MonoBehaviour
 {
@@ -61,7 +62,9 @@ public class SurfaceController : MonoBehaviour
             for ( int x = 0; x < tilesX + 1; x++ )
             {
                 int currentIndex = (z * (tilesX + 1)) + x;
-                vertices[currentIndex] = new Vector3( positionX, 0, positionZ );
+                float positionY = GetIndexPositionY( x, z );
+
+                vertices[currentIndex] = new Vector3( positionX, positionY, positionZ );
                 colors[currentIndex] = defaultVertexColor;
 
                 positionX += tileSize;
@@ -72,6 +75,14 @@ public class SurfaceController : MonoBehaviour
         }
 
         return vertices;
+    }
+
+    private float GetIndexPositionY( float x, float z )
+    {
+        float length = meshSize.x;
+        float width = meshSize.y;
+        float y = 3 * Sin( PI * (x / length + z / width) );
+        return y;
     }
 
     private int[] GetTrianglesForGrid( int tilesX, int tilesZ )
