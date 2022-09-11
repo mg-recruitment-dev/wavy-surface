@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 373dd7d12e5d2b74f9356371960b90a5, type: 2}
+  - {fileID: 2100000, guid: d036fda6136f5794d8440bfc04d09eea, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -100,3 +100,5 @@ MonoBehaviour:
   meshSize: {x: 30, y: 20}
   tileSize: 1
   defaultVertexColor: {r: 0.851, g: 0.894, b: 0.984, a: 1}
+  animate: 1
+  animationSpeed: 1
