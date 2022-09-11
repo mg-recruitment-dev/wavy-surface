@@ -11,12 +11,20 @@ public class SurfaceController : MonoBehaviour
     [SerializeField] private Vector2 meshSize = new Vector2( 30, 20 );
     [SerializeField] private float tileSize = 1f;
     [SerializeField] private Color defaultVertexColor = new Color( 0.851f, 0.894f, 0.984f );
+    [SerializeField] private bool animate = true;
+    [SerializeField] private float animationSpeed = 1f;
 
     private Mesh generatedMesh = null;
+    private float timer = 0f;
 
     private void Awake()
     {
         GenerateMesh();
+    }
+
+    private void Update()
+    {
+        AnimateMesh();
     }
 
     private void GenerateMesh()
@@ -49,6 +57,27 @@ public class SurfaceController : MonoBehaviour
         meshFilter.mesh = generatedMesh;
     }
 
+    private void AnimateMesh()
+    {
+        if ( !animate )
+            return;
+
+        timer += Time.deltaTime;
+        var vertices = generatedMesh.vertices;
+
+        for ( int i = 0; i < vertices.Length; i++ )
+        {
+            var currentVertex = vertices[i];
+            float newY = GetIndexPositionY( currentVertex.x, currentVertex.z, timer );
+            currentVertex.y = newY;
+
+            vertices[i] = currentVertex;
+        }
+
+        generatedMesh.vertices = vertices;
+        generatedMesh.RecalculateNormals();
+    }
+
     private Vector3[] GetVerticesForGrid( int tilesX, int tilesZ, out Color[] colors )
     {
         var vertices = new Vector3[(tilesX + 1) * (tilesZ + 1)];
@@ -62,7 +91,7 @@ public class SurfaceController : MonoBehaviour
             for ( int x = 0; x < tilesX + 1; x++ )
             {
                 int currentIndex = (z * (tilesX + 1)) + x;
-                float positionY = GetIndexPositionY( x, z );
+                float positionY = GetIndexPositionY( x, z, timer );
 
                 vertices[currentIndex] = new Vector3( positionX, positionY, positionZ );
                 colors[currentIndex] = defaultVertexColor;
@@ -77,11 +106,11 @@ public class SurfaceController : MonoBehaviour
         return vertices;
     }
 
-    private float GetIndexPositionY( float x, float z )
+    private float GetIndexPositionY( float x, float z, float t )
     {
         float length = meshSize.x;
         float width = meshSize.y;
-        float y = 3 * Sin( PI * (x / length + z / width) );
+        float y = 3 * Sin( PI * (x / length + z / width + (t * animationSpeed)) );
         return y;
     }
 
